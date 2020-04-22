@@ -6,3 +6,6 @@
 *.vcxproj.filters
 *.vcxproj.user
 ./voxel2vec algorthm/Debug
+*.suo
+*.db
+*.ipch
