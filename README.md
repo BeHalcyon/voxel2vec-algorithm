@@ -2,7 +2,7 @@
 
 The main flow of the algorithm is shown in the following figure: 
 
-![](https://github.com/XiangyangHe/voxel2vec-algorithm/image/algorithm.png)
+![](https://github.com/XiangyangHe/voxel2vec-algorithm/blob/master/image/algorithm.png)
 
 
 The code organization structure is as follows:
