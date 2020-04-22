@@ -1,0 +1,8 @@
+./Debug
+./.vs
+./.git
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+./voxel2vec algorthm/Debug
