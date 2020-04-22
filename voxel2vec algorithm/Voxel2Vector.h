@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "Neuron.h"
 #include <iostream>
 #include "Parameter.h"
 #include <omp.h>
@@ -10,10 +9,33 @@ using namespace std;
 
 #define IS_MULTITHREADING_USED
 
-class Volume2Vector
+#define MAX_CODE_LENGTH 50
+
+class Neuron
 {
 public:
-	Volume2Vector();
+	Neuron();
+	~Neuron();
+
+	long long cn = 0;
+	int point[MAX_CODE_LENGTH];
+	char code[MAX_CODE_LENGTH];
+	char codelen = 0;//code表示哈夫曼编码，codelen为编码长度
+	int intword = -1;
+
+	bool operator<(Neuron& b) const
+	{
+		return cn > b.cn;
+	}
+
+};
+
+
+
+class Voxel2Vector
+{
+public:
+	Voxel2Vector();
 
 
 	void printParameterInformation();
@@ -26,7 +48,7 @@ public:
 
 	void clear();
 	void init();
-	~Volume2Vector();
+	~Voxel2Vector();
 	void setRegularVolume(vector<vector<vector<int>>>& regularData, my_int3& dimension);
 	int getWordHash(int intword) const;
 	int addWordToVocab(int intword);

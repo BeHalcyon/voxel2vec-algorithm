@@ -1,11 +1,11 @@
-#include "Volume2Vector.h"
+#include "Voxel2Vector.h"
 #include <algorithm>
 #include <ctime>
 #include <set>
 #include <map>
 
 
-Volume2Vector::Volume2Vector(): starting_alpha(0)
+Voxel2Vector::Voxel2Vector(): starting_alpha(0)
 {
 	vocab_hash.resize(vocab_hash_size);
 
@@ -19,7 +19,7 @@ Volume2Vector::Volume2Vector(): starting_alpha(0)
 }
 
 
-void Volume2Vector::printParameterInformation()
+void Voxel2Vector::printParameterInformation()
 {
 	cout << "alpha:\t" << this->alpha << endl;
 	cout << "sample:\t" << this->sample << endl;
@@ -65,7 +65,7 @@ void Volume2Vector::printParameterInformation()
  * \param onlyOutOfRangeNegativeUsed
  * \param classes : The number of k-means cluster. default =3.
  */
-void Volume2Vector::setInformation(std::vector<int>& regular_1D_data,
+void Voxel2Vector::setInformation(std::vector<int>& regular_1D_data,
 	my_int3& dimension, int histogramDimension,
 	int layer1_size, int distance2, int negative,
 	int random_iteration, int isVoxelBasedHistogramSaved, int min_count,
@@ -110,7 +110,7 @@ void Volume2Vector::setInformation(std::vector<int>& regular_1D_data,
 }
 
 
-void Volume2Vector::clear()
+void Voxel2Vector::clear()
 {
 	syn0.clear();
 	syn1.clear();
@@ -120,7 +120,7 @@ void Volume2Vector::clear()
 	vocab_size = 0;
 }
 
-void Volume2Vector::init()
+void Voxel2Vector::init()
 {
 	initNet();
 	if(negative>0) initUnigramTable();
@@ -134,7 +134,7 @@ void Volume2Vector::init()
 		cout << endl;
 	}
 }
-Volume2Vector::~Volume2Vector()
+Voxel2Vector::~Voxel2Vector()
 {
 	syn0.clear();
 	syn1.clear();
@@ -144,17 +144,17 @@ Volume2Vector::~Volume2Vector()
 	expTable.clear();
 	vocab_hash.clear();
 }
-void Volume2Vector::setRegularVolume(vector<vector<vector<int>>>& regularData, my_int3& dimension)
+void Voxel2Vector::setRegularVolume(vector<vector<vector<int>>>& regularData, my_int3& dimension)
 {
 	this->regularData = regularData;
 	this->dimension = dimension;
 }
-int Volume2Vector::getWordHash(const int intword) const
+int Voxel2Vector::getWordHash(const int intword) const
 {
 	return intword;
 }
 
-int Volume2Vector::addWordToVocab(int intword)
+int Voxel2Vector::addWordToVocab(int intword)
 {
 	vocab[vocab_size].intword = intword;
 	vocab[vocab_size].cn = 0;
@@ -171,12 +171,12 @@ int Volume2Vector::addWordToVocab(int intword)
  * \param intword 
  * \return 
  */
-int Volume2Vector::searchVocab(const int intword) {
+int Voxel2Vector::searchVocab(const int intword) {
 	const unsigned int hash = getWordHash(intword);
 	return vocab_hash[hash];
 }
 
-void Volume2Vector::learnVocab()
+void Voxel2Vector::learnVocab()
 {
 	if(regularData.empty())
 		return;
@@ -221,7 +221,7 @@ void Volume2Vector::learnVocab()
 /**
  * \brief Sorts the vocabulary by frequency using word counts
  */
-void Volume2Vector::sortVocab() {
+void Voxel2Vector::sortVocab() {
 	int a;
 	sort(vocab.begin(), vocab.begin() + vocab_size);
 	for (a = 0; a < vocab_hash_size; a++) vocab_hash[a] = -1;
@@ -243,7 +243,7 @@ void Volume2Vector::sortVocab() {
 	}
 
 }
-void Volume2Vector::initUnigramTable()
+void Voxel2Vector::initUnigramTable()
 {
 	long long a;
 	double train_words_pow = 0;
@@ -265,7 +265,7 @@ void Volume2Vector::initUnigramTable()
 }
 
 
-void Volume2Vector::initNet()
+void Voxel2Vector::initNet()
 {
 	long long a, b;
 	unsigned long long next_random = 1;
@@ -299,7 +299,7 @@ void Volume2Vector::initNet()
 		}
 	createBinaryTree();
 }
-void Volume2Vector::createBinaryTree() {
+void Voxel2Vector::createBinaryTree() {
 	long long a, b, i, min1i, min2i, point[MAX_CODE_LENGTH];
 	char code[MAX_CODE_LENGTH];
 
@@ -381,7 +381,7 @@ void Volume2Vector::createBinaryTree() {
 	//free(parent_node);
 }
 
-void Volume2Vector::initLambda()
+void Voxel2Vector::initLambda()
 {
 	std::vector<int> edge_table(histogramDimension);
 	int edge_number = 0;
@@ -411,7 +411,7 @@ void Volume2Vector::initLambda()
 	}
 }
 
-void Volume2Vector::trainMultiThreading()
+void Voxel2Vector::trainMultiThreading()
 {
 	long long id = 0;
 	long long a, b, d, cw, word_index = 0, last_word, sentence_length = 0, sentence_position = 0;
@@ -538,7 +538,7 @@ void Volume2Vector::trainMultiThreading()
 	std::cout << std::endl;
 }
 
-void Volume2Vector::initializeNeighborhoodDistribution(long long index)
+void Voxel2Vector::initializeNeighborhoodDistribution(long long index)
 {
 	long long word_index = 0;
 
@@ -700,7 +700,7 @@ void Volume2Vector::initializeNeighborhoodDistribution(long long index)
 
 }
 
-void Volume2Vector::skipGramsMultiTheading(long long index, long long sentance_size)
+void Voxel2Vector::skipGramsMultiTheading(long long index, long long sentance_size)
 {
 
 	unsigned long long next_random = rand() % 65536;
@@ -908,7 +908,7 @@ void Volume2Vector::skipGramsMultiTheading(long long index, long long sentance_s
 * \param index_b
 * \return
 */
-myreal Volume2Vector::similarity(const int index_a, const int index_b) {
+myreal Voxel2Vector::similarity(const int index_a, const int index_b) {
 
 
 	if (index_a <0 || index_b <0) return 0.0f;
@@ -945,7 +945,7 @@ myreal Volume2Vector::similarity(const int index_a, const int index_b) {
 	return dist;
 }
 
-std::vector<std::vector<myreal>>& Volume2Vector::getFeatureVector()
+std::vector<std::vector<myreal>>& Voxel2Vector::getFeatureVector()
 {
 	feature_vector.clear();
 	feature_vector.resize(histogramDimension);
@@ -974,7 +974,7 @@ std::vector<std::vector<myreal>>& Volume2Vector::getFeatureVector()
 	return feature_vector;
 }
 
-void Volume2Vector::setFileSaveState(bool is_save_histogram_distribution, bool is_save_similarity_map,
+void Voxel2Vector::setFileSaveState(bool is_save_histogram_distribution, bool is_save_similarity_map,
 	bool is_save_volume_vector, bool is_save_cluster)
 {
 	this->is_save_histogram_distribution = is_save_histogram_distribution;
